@@ -16,7 +16,7 @@ final class AdminMenuListener
         ;
 
         $subMenu
-            ->addChild('pages', ['route' => 'app_dummy'])
+            ->addChild('pages', ['route' => 'admin_admin_cms_page_index'])
             ->setLabel('Pages')
             ->setLabelAttribute('icon', 'file alternate outline')
         ;

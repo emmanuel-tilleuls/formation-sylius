@@ -1,0 +1,14 @@
+<div class="ui segment">
+    {{ form_errors(form) }}
+
+    <div class="ui grid">
+        <div class="six wide column">
+            {{ form_row(form.title) }}
+            {{ form_row(form.status) }}
+            {{ form_row(form.product) }}
+        </div>
+        <div class="ten wide column">
+            {{ form_row(form.content) }}
+        </div>
+    </div>
+</div>
