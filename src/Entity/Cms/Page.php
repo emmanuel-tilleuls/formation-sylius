@@ -22,11 +22,14 @@ class Page implements ResourceInterface
     #[ORM\Column(type: 'text')]
     private $content;
 
-    #[ORM\OneToOne(targetEntity: Product::class, cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(targetEntity: Product::class)]
     private $product;
 
     #[ORM\Column(type: 'string', length: 255)]
     private $status;
+
+    #[ORM\Column(type: 'string', length: 255)]
+    private $slug;
 
     public function getId(): ?int
     {
@@ -77,6 +80,18 @@ class Page implements ResourceInterface
     public function setStatus(string $status): self
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
 
         return $this;
     }
