@@ -1,0 +1,10 @@
+{% extends '@SyliusShop/layout.html.twig' %}
+
+{% block title %}{{ cms_page.title }}{% endblock %}
+
+{% block content %}
+    <div>{{ dump(cms_page) }}</div>
+    <h1>{{ cms_page.title }}</h1>
+
+    <article>{{ cms_page.content|raw }}</article>
+{% endblock %}

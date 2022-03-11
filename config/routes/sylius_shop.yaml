@@ -27,3 +27,15 @@ sylius_shop_request_password_reset_token_redirect:
     defaults:
         route: sylius_shop_request_password_reset_token
         permanent: false
+
+
+shop_cms_page_show:
+    path: /{_locale}/cms/page/{slug}
+    controller: shop.controller.cms_page::showAction
+    methods: [GET]
+    defaults:
+        _sylius:
+            repository:
+                method: findOnePublishedBySlug
+                arguments: [$slug]
+

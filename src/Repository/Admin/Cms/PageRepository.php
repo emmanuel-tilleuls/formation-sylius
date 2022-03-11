@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repository\Cms;
+namespace App\Repository\Admin\Cms;
 
 use App\Entity\Cms\Page;
 use Sylius\Bundle\ResourceBundle\Doctrine\ORM\EntityRepository;
@@ -13,6 +13,18 @@ use Sylius\Bundle\ResourceBundle\Doctrine\ORM\EntityRepository;
  */
 class PageRepository extends EntityRepository
 {
+    public function findOnePublishedBySlug($slug)
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere("p.status = 'published'")
+            ->andWhere('p.slug = :slug')
+            ->setParameter(':slug', $slug)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+
+    }
+
     // /**
     //  * @return Page[] Returns an array of Pages objects
     //  */

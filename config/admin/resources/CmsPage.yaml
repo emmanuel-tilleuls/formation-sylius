@@ -4,7 +4,7 @@ sylius_resource:
             driver: doctrine/orm
             classes:
                 model: App\Entity\Cms\Page
-                repository: App\Repository\Cms\PageRepository
+                repository: App\Repository\Admin\Cms\PageRepository
                 form: App\Form\Type\Admin\Cms\PageType
         
 sylius_grid:
