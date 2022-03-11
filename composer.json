@@ -56,13 +56,20 @@
         "symfony/browser-kit": "^5.2",
         "symfony/debug-bundle": "^5.2",
         "symfony/intl": "^5.2",
+        "symfony/maker-bundle": "^1.38",
         "symfony/web-profiler-bundle": "^5.2"
     },
     "config": {
         "preferred-install": {
             "*": "dist"
         },
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "phpstan/extension-installer": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "symfony/flex": true,
+            "symfony/thanks": true
+        }
     },
     "extra": {
         "branch-alias": {
