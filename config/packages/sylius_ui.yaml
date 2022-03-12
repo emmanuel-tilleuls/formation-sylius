@@ -1,0 +1,8 @@
+sylius_ui:
+    events:
+        sylius.shop.product.show.right_sidebar:
+            blocks:
+                sku:
+                    template: "@SyliusShop/Product/Show/_sku.html.twig"
+                    priority: 29
+            

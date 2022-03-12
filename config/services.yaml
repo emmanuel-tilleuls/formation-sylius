@@ -45,3 +45,7 @@ services:
         tags:
             - { name: kernel.event_listener, event: admin.cms_page.pre_create }
             - { name: kernel.event_listener, event: admin.cms_page.pre_update }
+
+    App\Form\Extension\ProductTypeExtension:
+        tags:
+            - { name: form.type_extension }
