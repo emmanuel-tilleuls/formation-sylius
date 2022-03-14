@@ -2,14 +2,14 @@
 
 namespace App\OrderProcessor;
 
-use Sylius\Behat\Service\Setter\ChannelContextSetterInterface;
 use Sylius\Component\Channel\Context\ChannelContextInterface;
 use Sylius\Component\Core\Factory\CartItemFactory;
+use Sylius\Component\Core\Factory\CartItemFactoryInterface;
 use Sylius\Component\Order\Model\OrderInterface;
 use Sylius\Component\Core\Model\ProductInterface;
 use Sylius\Component\Locale\Context\LocaleContextInterface;
-use Sylius\Component\Order\Model\OrderItem;
-use Sylius\Component\Order\Model\OrderItemUnit;
+use Sylius\Component\Order\Factory\OrderItemUnitFactoryInterface;
+use Sylius\Component\Order\Modifier\OrderModifier;
 use Sylius\Component\Order\Processor\OrderProcessorInterface;
 use Sylius\Component\Product\Repository\ProductRepositoryInterface;
 use Sylius\Component\Taxonomy\Repository\TaxonRepositoryInterface;
@@ -21,8 +21,10 @@ class AddDressOrderProcessor implements OrderProcessorInterface
         private ChannelContextInterface $channelContext,
         private LocaleContextInterface $localeContext,
         private CartItemFactory $cartItemFactory,
+        private OrderItemUnitFactoryInterface $orderItemUnitFactory,
         private TaxonRepositoryInterface $taxonRepository,
         private ProductRepositoryInterface $productRepository,
+        private OrderModifier $orderModifier,
     ) {
     }
 
@@ -32,8 +34,8 @@ class AddDressOrderProcessor implements OrderProcessorInterface
         foreach ($order->getItems() as $item) {
             /** @var ProductInterface $product */
             $product = $item->getProduct();
-            foreach ($product->getTaxons() as $taxon) {
-                if ($taxon->getCode() == 't_shirts') {
+            foreach ($product->getProductTaxons() as $taxon) {
+                if ($taxon->getTaxon()->getCode() == 't_shirts') {
                     return true;
                 }
             }
@@ -47,23 +49,33 @@ class AddDressOrderProcessor implements OrderProcessorInterface
         // Remove previously added dress
         // TODO
 
-        if ($this->orderHasTShirt($order)) {
-            // Looking for dress to add 
-            /** @var TaxonInterface $dressesTaxon */
-            $dressesTaxon = $this->taxonRepository->findOneBy(['code' => 'dresses']);
-
-            $products = $this->productRepository
-                ->createShopListQueryBuilder(
-                    $this->channelContext->getChannel(),
-                    $dressesTaxon,
-                    $this->localeContext->getLocaleCode()
-
-
-                )
-
-            $cartItem = $this->cartItemFactory->createForProduct();
-
-            $order->addItem($cartItem);
+        if (!$this->orderHasTShirt($order)) {
+            return;
         }
+
+        // Looking for dress to add 
+        /** @var TaxonInterface $dressesTaxon */
+        $dressesTaxon = $this->taxonRepository->findOneBy(['code' => 'dresses']);
+
+        /** @var \Sylius\Bundle\CoreBundle\Doctrine\ORM\ProductRepository $productRepository */
+        $productRepository = $this->productRepository;
+        $products = $productRepository
+            ->createShopListQueryBuilder(
+                $this->channelContext->getChannel(),
+                $dressesTaxon,
+                $this->localeContext->getLocaleCode()
+            )
+            ->getQuery()
+            ->getResult()
+        ;
+
+        $cartItem = $this->cartItemFactory->createForProduct($products[0]);
+
+        // Attention : il faudrait choisir le bonne variant
+
+        $cartItem->setUnitPrice(0);
+        $cartItem->addUnit($this->orderItemUnitFactory->createForItem($cartItem));
+
+        $order->addItem($cartItem);
     }
 }

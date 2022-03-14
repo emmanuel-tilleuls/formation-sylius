@@ -49,3 +49,7 @@ services:
     App\Form\Extension\ProductTypeExtension:
         tags:
             - { name: form.type_extension }
+
+    App\OrderProcessor\AddDressOrderProcessor:
+        arguments:
+            $cartItemFactory: '@sylius.custom_factory.order_item'
