@@ -9,7 +9,8 @@ use Sylius\Component\Order\Model\OrderInterface;
 use Sylius\Component\Core\Model\ProductInterface;
 use Sylius\Component\Locale\Context\LocaleContextInterface;
 use Sylius\Component\Order\Factory\OrderItemUnitFactoryInterface;
-use Sylius\Component\Order\Modifier\OrderModifier;
+use Sylius\Component\Order\Modifier\OrderItemQuantityModifierInterface;
+use Sylius\Component\Order\Modifier\OrderModifierInterface;
 use Sylius\Component\Order\Processor\OrderProcessorInterface;
 use Sylius\Component\Product\Repository\ProductRepositoryInterface;
 use Sylius\Component\Taxonomy\Repository\TaxonRepositoryInterface;
@@ -24,7 +25,8 @@ class AddDressOrderProcessor implements OrderProcessorInterface
         private OrderItemUnitFactoryInterface $orderItemUnitFactory,
         private TaxonRepositoryInterface $taxonRepository,
         private ProductRepositoryInterface $productRepository,
-        private OrderModifier $orderModifier,
+        private OrderModifierInterface $orderModifier,
+        private OrderItemQuantityModifierInterface $orderItemQuantityModifier,
     ) {
     }
 
@@ -75,6 +77,8 @@ class AddDressOrderProcessor implements OrderProcessorInterface
 
         $cartItem->setUnitPrice(0);
         $cartItem->addUnit($this->orderItemUnitFactory->createForItem($cartItem));
+
+        //$this->orderItemQuantityModifier->modify()
 
         $order->addItem($cartItem);
     }
