@@ -44,4 +44,4 @@ sylius_admin_locale:
             index:
                 icon: translate
     type: sylius.resource
-    prefix: /admin
+    prefix: '/%sylius_admin.path_name%'
