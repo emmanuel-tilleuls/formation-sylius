@@ -28,6 +28,13 @@ sylius_shop_request_password_reset_token_redirect:
         route: sylius_shop_request_password_reset_token
         permanent: false
 
+shop_cms_page_resource:
+    resource: |
+        alias: shop.cms_page
+        grid: shop_cms_page
+        only: ['show']
+    type: sylius.resource
+    prefix: /{_locale}/cms/
 
 shop_cms_page_show:
     path: /{_locale}/cms/page/{slug}
