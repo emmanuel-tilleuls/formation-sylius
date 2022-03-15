@@ -53,3 +53,39 @@ services:
     App\OrderProcessor\AddDressOrderProcessor:
         arguments:
             $cartItemFactory: '@sylius.custom_factory.order_item'
+
+    ## Service pour ajout d'une gateway de paiement
+    ### Version avec le GatewayFactoryBuilder comme la doc :
+    ###   - https://docs.sylius.com/en/latest/cookbook/payments/custom-payment-gateway.html
+    ###   - https://github.com/Payum/Payum/blob/master/docs/symfony/custom-action-usage.md
+    app.dummy_payment:
+        class: Payum\Core\Bridge\Symfony\Builder\GatewayFactoryBuilder
+        arguments: [ App\Payum\DummyPaymentGatewayFactory ]
+        tags:
+            - { name: payum.gateway_factory_builder, factory: dummy_payment }
+
+    app.dummy_payment.action.status:
+        class: App\Payum\Action\StatusAction
+        public: true
+        tags:
+            - { name: payum.action, factory: dummy_payment, alias: payum.action.status }
+
+    app.dummy_payment.action.capture:
+        class: App\Payum\Action\CaptureAction
+        public: true
+        tags:
+            - { name: payum.action, factory: dummy_payment, alias: payum.action.capture }
+
+    ### Version de Arnaud (https://slides.com/arnaudfrezet/sylius#/24/7)
+    #App\Payum\DummyPaymentGatewayFactory:
+    #    arguments:
+    #        $captureAction: '@App\Payment\Action\CaptureAction'
+    #        $statusAction: '@App\Payment\Action\StatusAction'
+    #    tags:
+    #        - {name: payum.gateway_factory_builder, factory: dummy_payment}
+
+
+    App\Form\Type\Admin\DummyPaymentGatewayConfigurationType:
+        tags:
+            - { name: sylius.gateway_configuration_type, type: dummy_payment, label: 'Dummy Payment'}
+            - { name: form.type }
